@@ -10,7 +10,7 @@ class Cinema21Spider(scrapy.Spider):
         scrapy.Request(url = url)
 
     def parse(self, response):
-        response = scrapy.http.HTMLResponse(response)
+        response = scrapy.http.HtmlResponse("https://www.cinema21.com")
         titles = response.css('script:nth-of-type(6)::text').re(r".*'title': '(.*)'")
         #Ok, so this is wrong, although my selector was mostly written correctly!
         #I'm actually pulling from a Javascript thingy. SO I would need to parse it out of javascript first.
