@@ -10,12 +10,12 @@ chrome_options.add_argument("--headless=new")
 
 #this defines which browser to use and runs the request to pull
 driver = webdriver.Chrome(options=chrome_options)
-c21_titles = []
 
 def cinema21():
     driver.get("https://www.cinema21.com")
     c21_titles = driver.find_elements(By.CSS_SELECTOR, ".movie-info h2")
-    print(c21_titles)
+    for item in c21_titles:
+        print(item.text)
 
 
 #def hollywood():
