@@ -28,8 +28,12 @@ def tables():
     cur = conn.cursor()
     titles = cinema21()
     cur.execute("CREATE TABLE IF NOT EXISTS films(title)")
-    for item in titles:
-        cur.execute(f"INSERT INTO films (title) VALUES ('{item.text}');")
+    data = []
+    for title in titles:
+        data.append(title.text)
+    for item in data:
+        cur.execute(f"INSERT INTO films (title) VALUES ('{item}');")
+        conn.commit()
 
 if __name__ == '__main__':
     tables()
