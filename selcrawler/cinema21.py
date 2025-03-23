@@ -8,14 +8,15 @@ import sqlite3
 chrome_options = Options()
 chrome_options.add_argument("--headless=new")
 
-#this defines which browser to use and runs the request to pull
+#Define browser choice and implement options
 driver = webdriver.Chrome(options=chrome_options)
 
 def cinema21():
+    #Get page
     driver.get("https://www.cinema21.com")
+    #Save titles
     c21_titles = driver.find_elements(By.CSS_SELECTOR, ".movie-info h2")
-    for item in c21_titles:
-        print(item.text)
+    return c21_titles
 
 
 #def hollywood():
@@ -25,11 +26,10 @@ def cinema21():
 def tables():
     conn = sqlite3.connect('Database/Films.db')
     cur = conn.cursor()
+    titles = cinema21()
     cur.execute("CREATE TABLE IF NOT EXISTS films(title)")
-    for item in c21_titles:
-        command = ("INSERT INTO films VALUES(" + item.text + ")")
-        cur.execute(command)
+    for item in titles:
+        cur.execute(f"INSERT INTO films (title) VALUES ('{item.text}');")
 
 if __name__ == '__main__':
-    cinema21()
     tables()
