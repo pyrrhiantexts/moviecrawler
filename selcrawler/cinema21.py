@@ -16,7 +16,11 @@ def cinema21():
     driver.get("https://www.cinema21.com")
     #Save titles
     c21_titles = driver.find_elements(By.CSS_SELECTOR, ".movie-info h2")
-    return c21_titles
+    titles = []
+    for title in c21_titles:
+        if title.text:
+            titles.append(title.text)
+    return titles
 
 
 #def hollywood():
@@ -27,12 +31,9 @@ def tables():
     conn = sqlite3.connect('Database/Films.db')
     cur = conn.cursor()
     titles = cinema21()
-    cur.execute("CREATE TABLE IF NOT EXISTS films(title)")
-    data = []
-    for title in titles:
-        data.append(title.text)
-    for item in data:
-        cur.execute(f"INSERT INTO films (title) VALUES ('{item}');")
+    cur.execute("CREATE TABLE IF NOT EXISTS films(title);")
+    for item in titles:
+        cur.execute(f"INSERT OR REPLACE INTO films (title) VALUES ('{item}');")
         conn.commit()
 
 if __name__ == '__main__':
