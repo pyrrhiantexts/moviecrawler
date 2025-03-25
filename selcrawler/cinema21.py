@@ -33,7 +33,7 @@ def tables():
     titles = cinema21()
     cur.execute("CREATE TABLE IF NOT EXISTS films(title);")
     for item in titles:
-        cur.execute(f"INSERT OR REPLACE INTO films (title) VALUES ('{item}');")
+        cur.execute(f'INSERT OR REPLACE INTO films (title) VALUES ("{item}");')
         conn.commit()
 
 if __name__ == '__main__':
