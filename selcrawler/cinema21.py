@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import sqlite3
-from datetime import date, time, datetime
+from datetime import date
 
 #this option makes the browser 'headless' which means Chrome doesn't
 #briefly open to pull the HTML
