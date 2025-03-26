@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import sqlite3
+from datetime import date, time, datetime
 
 #this option makes the browser 'headless' which means Chrome doesn't
 #briefly open to pull the HTML
@@ -22,9 +23,27 @@ def cinema21():
         if title.text:
             titles.append(title.text)
             titlebug = title.text.lower().replace(' ','-')
-            dates = driver.find_elements(By.CSS_SELECTOR, f'.movie-info:has(a[href="/movie/{titlebug}"])')
-            #I still need to define the actual selector for date -- this was just a titlebug implementation so far
+            #All of these arguments in the selector are necessary because movie-details is the very last class which we can
+            #identify the relevant movie title in the element
+            dates = driver.find_elements(By.CSS_SELECTOR, f'.movie-details:has(a[href="/movie/{titlebug}"]) .movie-times .session-row .day')
+            #I still need to define the actual selector for date -- 
+            #this was just a titlebug implementation so far
+            for date in dates:
+                if date.text == 'Today':
+                    #This is the point where I need to start looping for showtimes.
+            
     return titles
+
+#Rough early outline for future capability.
+#Currently working only on today's showtimes.
+#def convert_date(day):
+    #if day == 'Today':
+        #return date.today()
+    #else:
+        #weekday, month, dayofmonth = day.split(',')
+        #weekday = weekday.strip()
+
+
 
 
 #def hollywood():
