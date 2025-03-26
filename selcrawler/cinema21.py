@@ -17,9 +17,13 @@ def cinema21():
     #Save titles
     c21_titles = driver.find_elements(By.CSS_SELECTOR, ".movie-info h2")
     titles = []
+    datesheet = {}
     for title in c21_titles:
         if title.text:
             titles.append(title.text)
+            titlebug = title.text.lower().replace(' ','-')
+            dates = driver.find_elements(By.CSS_SELECTOR, f'.movie-info:has(a[href="/movie/{titlebug}"])')
+            #I still need to define the actual selector for date -- this was just a titlebug implementation so far
     return titles
 
 
