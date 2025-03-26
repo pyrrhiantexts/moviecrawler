@@ -18,7 +18,7 @@ def cinema21():
     #Save titles
     c21_titles = driver.find_elements(By.CSS_SELECTOR, ".movie-info h2")
     titles = []
-    datesheet = {}
+    datesheet = []
     for title in c21_titles:
         if title.text:
             titles.append(title.text)
@@ -30,7 +30,11 @@ def cinema21():
             #this was just a titlebug implementation so far
             for date in dates:
                 if date.text == 'Today':
+                    times = driver.find_elements(By.CSS_SELECTOR, f'.movie-details:has(a[href="/movie/{titlebug}"]) .movie-times .session-row .time')
+                    datesheet.append({'title':{title.text}, 'showtime1':{times[0].text}, 'showtime2':{times[1].text}, 'showtime3':{times[2].text}, 'showtime4':{times[3].text}})
                     #This is the point where I need to start looping for showtimes.
+                else:
+                    continue
             
     return titles
 
