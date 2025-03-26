@@ -34,7 +34,7 @@ def cinema21():
                     datesheet.append({'title':{title.text}, 'showtime1':{times[0].text}, 'showtime2':{times[1].text}, 'showtime3':{times[2].text}, 'showtime4':{times[3].text}})
                     #This is the point where I need to start looping for showtimes.
                 else:
-                    continue
+                    break
             
     return titles
 
