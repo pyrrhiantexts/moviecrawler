@@ -4,25 +4,26 @@ from selenium.webdriver.chrome.options import Options
 import sqlite3
 from datetime import date
 
-#this option makes the browser 'headless' which means Chrome doesn't
-#briefly open to pull the HTML
+#Opts for headless browser
 chrome_options = Options()
 chrome_options.add_argument("--headless=new")
 
-#Define browser choice and implement options
+#Implement browser option
 driver = webdriver.Chrome(options=chrome_options)
 
 def cinema21():
-    #Get page
+
     driver.get("https://www.cinema21.com")
-    #Save titles
+
     c21_titles = driver.find_elements(By.CSS_SELECTOR, ".movie-info h2")
+
     titles = []
     datesheet = []
+
     for title in c21_titles:
         if title.text:
             titles.append(title.text)
-            titlebug = title.text.lower().replace(' ','-')
+            titlebug = title.text.lower().replace(' ','-').replace("'", "").replace('(','')
             #All of these arguments in the selector are necessary because movie-details is the very last class which we can
             #identify the relevant movie title in the element
             dates = driver.find_elements(By.CSS_SELECTOR, f'.movie-details:has(a[href="/movie/{titlebug}"]) .movie-times .session-row .day')
@@ -37,6 +38,22 @@ def cinema21():
                     break
             
     return titles
+
+
+
+def tables():
+    conn = sqlite3.connect('Database/Films.db')
+    cur = conn.cursor()
+    titles = cinema21()
+    cur.execute("CREATE TABLE IF NOT EXISTS films(title);")
+    for item in titles:
+        cur.execute(f'INSERT OR REPLACE INTO films (title) VALUES ("{item}");')
+        conn.commit()
+
+if __name__ == '__main__':
+    tables()
+
+
 
 #Rough early outline for future capability.
 #Currently working only on today's showtimes.
@@ -53,15 +70,3 @@ def cinema21():
 #def hollywood():
     #driver.get("https://www.hollywoodtheatre.org")
     #hollywood_titles = driver.find_elements(By.CSS_SELECTOR, "#TODO")
-
-def tables():
-    conn = sqlite3.connect('Database/Films.db')
-    cur = conn.cursor()
-    titles = cinema21()
-    cur.execute("CREATE TABLE IF NOT EXISTS films(title);")
-    for item in titles:
-        cur.execute(f'INSERT OR REPLACE INTO films (title) VALUES ("{item}");')
-        conn.commit()
-
-if __name__ == '__main__':
-    tables()
