@@ -24,28 +24,35 @@ def cinema21():
         if title.text:
             titles.append(title.text)
             titlebug = title.text.lower().replace(' ','-').replace("'", "").replace('(','')
+
             #All of these arguments in the selector are necessary because movie-details is the very last class which we can
             #identify the relevant movie title in the element
             dates = driver.find_elements(By.CSS_SELECTOR, f'.movie-details:has(a[href="/movie/{titlebug}"]) .movie-times .session-row .day')
-            #I still need to define the actual selector for date -- 
-            #this was just a titlebug implementation so far
+
             for date in dates:
                 if date.text == 'Today':
                     times = driver.find_elements(By.CSS_SELECTOR, f'.movie-details:has(a[href="/movie/{titlebug}"]) .movie-times .session-row .time')
-                    datesheet.append([title.text, times[0].text, times[1].text, times[2].text, times[3].text])
+                    screenings = len(times)
+
+                    datesheet_entry = title.text
+
+                    for i in range(screenings):
+                        datesheet_entry = datesheet_entry + f', {times[i].text}'
+
+                    datesheet.append(datesheet_entry)
                 else:
                     break
             
-    return titles
+    return datesheet
 
 
 
 def tables():
     conn = sqlite3.connect('Database/Films.db')
     cur = conn.cursor()
-    titles = cinema21()
-    cur.execute("CREATE TABLE IF NOT EXISTS films(title);")
-    for item in titles:
+    showtimes = cinema21()
+    cur.execute("CREATE TABLE IF NOT EXISTS films(title, showtime1, showtime2, showtime3, showtime4);")
+    for item in showtimes:
         cur.execute(f'INSERT OR REPLACE INTO films (title) VALUES ("{item}");')
         conn.commit()
 
