@@ -2,7 +2,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import sqlite3
-from datetime import date
+from sys import argv
+import re
+#from datetime import date
 
 #Opts for headless browser
 chrome_options = Options()
@@ -12,6 +14,13 @@ MAX_SCREENINGS = 4
 
 #Implement browser option
 driver = webdriver.Chrome(options=chrome_options)
+
+def hollywood():
+    driver.get("https://www.hollywoodtheatre.org")
+    header = driver.find_elements(By.CSS_SELECTOR, ".gecko-show-list")
+    gecko = header.get_dom_attribute('data-props')
+    titles = re.search(r'.*"title":"(.*)"', gecko)
+
 
 def cinema21():
 
