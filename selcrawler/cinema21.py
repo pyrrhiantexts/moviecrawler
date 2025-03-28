@@ -33,17 +33,17 @@ def cinema21():
 
             for date in dates:
                 if date.text == 'Today':
-                    #NEED TO WRITE :has() SELECTOR BEFORE RUNNING TEST
-                    times = driver.find_elements(By.CSS_SELECTOR, f'.movie-details:has(a[href="/movie/{titlebug}"]) .movie-times .session-row:has(...) .time')
-                    screenings = len(times)
 
-                    datesheet_entry = title.text
+                    times = driver.find_elements(By.CSS_SELECTOR, f'.movie-details:has(a[href="/movie/{titlebug}"]) .movie-times .session-row:nth-of-type(1) .time')
 
-                    for i in range(1, MAX_SCREENINGS):
+                    #The quote mark business is SQL string manipulation
+                    datesheet_entry = title.text + '"'
+
+                    for i in range(MAX_SCREENINGS):
                         try:
-                            datesheet_entry = datesheet_entry + f', {times[i].text}'
+                            datesheet_entry = datesheet_entry + f', "{times[i].text}"'
                         except IndexError:
-                            datesheet_entry = datesheet_entry + ', '
+                            datesheet_entry = datesheet_entry + ', "None"'
 
                     datesheet.append(datesheet_entry)
                 else:
@@ -59,7 +59,7 @@ def tables():
     showtimes = cinema21()
     cur.execute("CREATE TABLE IF NOT EXISTS films(title, showtime1, showtime2, showtime3, showtime4);")
     for item in showtimes:
-        cur.execute(f'INSERT OR REPLACE INTO films (title, showtime1, showtime2, showtime3, showtime4) VALUES ("{item}");')
+        cur.execute(f'INSERT OR REPLACE INTO films (title, showtime1, showtime2, showtime3, showtime4) VALUES ("{item});')
         conn.commit()
 
 if __name__ == '__main__':
