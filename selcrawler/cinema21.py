@@ -13,20 +13,24 @@ chrome_options.add_argument("--headless=new")
 
 MAX_SCREENINGS = 4
 
+pull_c21 = True
+pull_hollywood = True
+
 #Implement browser option
 driver = webdriver.Chrome(options=chrome_options)
 
 def main():
 
-    if len(argv) == 1:
-        tables()
-
-    elif len(argv) == 2:
-        if 'c' not in argv[1]:
-            pull_c21 = False
-        if 'h' not in argv[1]:
-            pull_hollywood = False
-        tables(pull_c21, pull_hollywood)
+    if len(argv) <= 2:
+        try:
+            if 'c' not in argv[1]:
+                pull_c21 = False
+            if 'h' not in argv[1]:
+                pull_hollywood = False
+        except IndexError:
+            pass
+        finally:
+            tables()
     
     elif len(argv) > 2:
         print('Invalid CLI usage')
@@ -82,7 +86,7 @@ def cinema21():
 
 
 
-def tables(pull_c21 = True, pull_hollywood = True):
+def tables():
     conn = sqlite3.connect('Database/Films.db')
     cur = conn.cursor()
     showtimes = cinema21()
