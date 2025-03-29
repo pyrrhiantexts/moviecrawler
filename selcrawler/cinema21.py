@@ -1,8 +1,9 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote import webelement
 from selenium.webdriver.chrome.options import Options
 import sqlite3
-from sys import argv
+from sys import argv, exit
 import re
 #from datetime import date
 
@@ -15,11 +16,30 @@ MAX_SCREENINGS = 4
 #Implement browser option
 driver = webdriver.Chrome(options=chrome_options)
 
+def main():
+
+    if len(argv) == 1:
+        tables()
+
+    elif len(argv) == 2:
+        if 'c' not in argv[1]:
+            pull_c21 = False
+        if 'h' not in argv[1]:
+            pull_hollywood = False
+        tables(pull_c21, pull_hollywood)
+    
+    elif len(argv) > 2:
+        print('Invalid CLI usage')
+        exit
+
+
+
 def hollywood():
     driver.get("https://www.hollywoodtheatre.org")
-    header = driver.find_elements(By.CSS_SELECTOR, ".gecko-show-list")
-    gecko = header.get_dom_attribute('data-props')
-    titles = re.search(r'.*"title":"(.*)"', gecko)
+
+    hollywood_titles = driver.find_elements(By.CSS_SELECTOR, ".show-card .show-card__title h3 a[href=]")
+
+
 
 
 def cinema21():
@@ -62,7 +82,7 @@ def cinema21():
 
 
 
-def tables():
+def tables(pull_c21 = True, pull_hollywood = True):
     conn = sqlite3.connect('Database/Films.db')
     cur = conn.cursor()
     showtimes = cinema21()
@@ -72,7 +92,7 @@ def tables():
         conn.commit()
 
 if __name__ == '__main__':
-    tables()
+    main()
 
 
 
