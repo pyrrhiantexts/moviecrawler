@@ -44,8 +44,22 @@ def hollywood():
     hwood_movies = driver.find_elements(By.CSS_SELECTOR, ".show-card .show-card__image")
     hwood_titles = []
 
+    #Find titles
     for i in len(hwood_movies):
         hwood_titles[i] = hwood_movies[i].get_dom_attribute("title")
+    
+    #Find showtimes
+    for title in hwood_titles:
+        titlebug = title.lower().replace(' ','-').replace("'", "").replace('(','')
+
+        dateelements = driver.find_elements(By.CSS_SELECTOR, f'.show-card:has(.show-card_header:has(a[href="https://hollywoodtheatre.org/show/{titlebug}/"])) .show-card-events .show-card-events__date')
+        dates = []
+        for i in len(dateelements):
+            #This might be a problem. Need to know if getText does what I want
+            dates[i] = dateelements[i].getText
+
+
+    driver.close()
 
     
 
@@ -87,7 +101,8 @@ def cinema21():
                     datesheet.append(datesheet_entry)
                 else:
                     break
-            
+    
+    driver.close()
     return datesheet
 
 
