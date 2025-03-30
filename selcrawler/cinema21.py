@@ -41,7 +41,13 @@ def main():
 def hollywood():
     driver.get("https://www.hollywoodtheatre.org")
 
-    hollywood_titles = driver.find_elements(By.CSS_SELECTOR, ".show-card .show-card__title h3 a[href=]")
+    hwood_movies = driver.find_elements(By.CSS_SELECTOR, ".show-card .show-card__image")
+    hwood_titles = []
+
+    for i in len(hwood_movies):
+        hwood_titles[i] = hwood_movies[i].get_dom_attribute("title")
+
+    
 
 
 
