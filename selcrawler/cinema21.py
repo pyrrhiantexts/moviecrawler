@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.options import Options
 import sqlite3
 from sys import argv, exit
 import re
-#from datetime import date
+from datetime import date
 
 #Opts for headless browser
 chrome_options = Options()
@@ -15,6 +15,8 @@ MAX_SCREENINGS = 4
 
 pull_c21 = True
 pull_hollywood = True
+
+months = {'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'June': 6, 'July': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec':12}
 
 #Implement browser option
 driver = webdriver.Chrome(options=chrome_options)
@@ -43,6 +45,7 @@ def hollywood():
 
     hwood_movies = driver.find_elements(By.CSS_SELECTOR, ".show-card .show-card__image")
     hwood_titles = []
+    dates = []
 
     #Find titles
     for i in len(hwood_movies):
@@ -50,18 +53,18 @@ def hollywood():
     
     #Find showtimes
     for title in hwood_titles:
-        titlebug = title.lower().replace(' ','-').replace("'", "").replace('(','')
+        if title.text:
+            titlebug = title.lower().replace(' ','-').replace("'", "").replace('(','')
 
-        dateelements = driver.find_elements(By.CSS_SELECTOR, f'.show-card:has(.show-card_header:has(a[href="https://hollywoodtheatre.org/show/{titlebug}/"])) .show-card-events .show-card-events__date')
-        dates = []
-        for i in len(dateelements):
-            #This might be a problem. Need to know if getText does what I want
-            dates[i] = dateelements[i].getText
+            dateelements = driver.find_elements(By.CSS_SELECTOR, f'.show-card:has(.show-card_header:has(a[href="https://hollywoodtheatre.org/show/{titlebug}/"])) .show-card-events .show-card-events__date')
+
+            for i in len(dateelements):
+                dates[i] = dateelements[i].text
+
+
 
 
     driver.close()
-
-    
 
 
 
@@ -106,6 +109,10 @@ def cinema21():
     return datesheet
 
 
+def convert_date(original_date):
+    day, month, date = original_date.split(' ')
+    day = day.strip()
+    date 
 
 def tables():
     conn = sqlite3.connect('Database/Films.db')
