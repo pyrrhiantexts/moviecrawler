@@ -52,15 +52,19 @@ def hollywood():
     for i in len(hwood_movies):
         hwood_titles[i] = hwood_movies[i].get_dom_attribute("title")
     
-    #Find showtimes
+    #Find movies on cards
     for title in hwood_titles:
         if title.text:
             titlebug = title.lower().replace(' ','-').replace("'", "").replace('(','')
-
+            #Find show dates
             dateelements = driver.find_elements(By.CSS_SELECTOR, f'.show-card:has(.show-card_header:has(a[href="https://hollywoodtheatre.org/show/{titlebug}/"])) .show-card-events .show-card-events__date')
-
+            #Find show times for today
             for i in len(dateelements):
                 dates[i] = dateelements[i].text
+                if convert_date(dates[i]) == datetime.today():
+                    timelements = driver.find_elements(By.CSS_SELECTOR, f'')
+                else:
+                    break
 
 
 
@@ -114,7 +118,7 @@ def convert_date(original_date):
     day, month, date = original_date.split(' ')
     month = months[month]
     #Removes comma
-    day = day.strip()
+    day = day.strip(' ,')
     #Removes textual date suffixes
     date = date[:-2]
     current_year = datetime.now().year
