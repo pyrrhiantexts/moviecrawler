@@ -40,7 +40,6 @@ def main():
         exit
 
 
-
 def hollywood():
     driver.get("https://www.hollywoodtheatre.org")
 
@@ -48,7 +47,6 @@ def hollywood():
     hwood_titles = []
     hwood_dates = []
     hwood_datesheet = []
-
 
     #Find titles
     for i in len(hwood_movies):
@@ -74,13 +72,12 @@ def hollywood():
                             datesheet_entry = datesheet_entry + ', "None"'
                 else:
                     break
+                hwood_datesheet.append(datesheet_entry)
 
 
 
 
     driver.close()
-
-
 
 
 def cinema21():
@@ -134,14 +131,21 @@ def convert_date(original_date):
     iso_date =date(current_year, month, date).isoformat()
     return iso_date
 
+
 def tables():
     conn = sqlite3.connect('Database/Films.db')
     cur = conn.cursor()
-    showtimes = cinema21()
-    cur.execute("CREATE TABLE IF NOT EXISTS films(title, showtime1, showtime2, showtime3, showtime4);")
-    for item in showtimes:
-        cur.execute(f'INSERT OR REPLACE INTO films (title, showtime1, showtime2, showtime3, showtime4) VALUES ("{item});')
-        conn.commit()
+    cur.execute("CREATE TABLE IF NOT EXISTS films(theater, title, showtime1, showtime2, showtime3, showtime4);")
+    if pull_c21:
+        c21_showtimes = cinema21()
+        for item in c21_showtimes:
+            cur.execute(f'INSERT OR REPLACE INTO films (title, showtime1, showtime2, showtime3, showtime4) VALUES ("Cinema 21", "{item});')
+            conn.commit()
+    if pull_hollywood:
+        hwood_showtimes = hollywood()
+        for item in hwood_showtimes:
+            cur.execute(f'INSERT OR REPLACE INTO films (title, showtime1, showtime2, showtime3, showtime4) VALUES ("Hollywood Theater", "{item});')
+            conn.commit()
 
 if __name__ == '__main__':
     main()
