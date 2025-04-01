@@ -46,7 +46,9 @@ def hollywood():
 
     hwood_movies = driver.find_elements(By.CSS_SELECTOR, ".show-card .show-card__image")
     hwood_titles = []
-    dates = []
+    hwood_dates = []
+    hwood_datesheet = []
+
 
     #Find titles
     for i in len(hwood_movies):
@@ -57,12 +59,19 @@ def hollywood():
         if title.text:
             titlebug = title.lower().replace(' ','-').replace("'", "").replace('(','')
             #Find show dates
-            dateelements = driver.find_elements(By.CSS_SELECTOR, f'.show-card:has(.show-card_header:has(a[href="https://hollywoodtheatre.org/show/{titlebug}/"])) .show-card-events .show-card-events__date')
+            dateelements = driver.find_elements(By.CSS_SELECTOR, f'.show-card:has(.show-card__header:has(a[href="https://hollywoodtheatre.org/show/{titlebug}/"])) .show-card-events .show-card-events__date')
             #Find show times for today
             for i in len(dateelements):
-                dates[i] = dateelements[i].text
-                if convert_date(dates[i]) == datetime.today():
-                    timelements = driver.find_elements(By.CSS_SELECTOR, f'')
+                hwood_dates[i] = dateelements[i].text
+                if convert_date(hwood_dates[i]) == datetime.today():
+                    timeelements = driver.find_elements(By.CSS_SELECTOR, f'.show-card:has(.show-card__header:has(a[href="https://hollywoodtheatre.org/show/{titlebug}/"])) .show-card-events .show-card-events__showtimes span')
+
+                    datesheet_entry = title.text + '"'
+                    for i in range(MAX_SCREENINGS):
+                        try:
+                            datesheet_entry = datesheet_entry + f', "{timeelements[i].text}"'
+                        except IndexError:
+                            datesheet_entry = datesheet_entry + ', "None"'
                 else:
                     break
 
