@@ -5,7 +5,8 @@ from selenium.webdriver.chrome.options import Options
 import sqlite3
 from sys import argv, exit
 import re
-from datetime import date
+import time
+from datetime import date, datetime
 
 #Opts for headless browser
 chrome_options = Options()
@@ -111,8 +112,14 @@ def cinema21():
 
 def convert_date(original_date):
     day, month, date = original_date.split(' ')
+    month = months[month]
+    #Removes comma
     day = day.strip()
-    date 
+    #Removes textual date suffixes
+    date = date[:-2]
+    current_year = datetime.now().year
+    iso_date =date(current_year, month, date).isoformat()
+    return iso_date
 
 def tables():
     conn = sqlite3.connect('Database/Films.db')
