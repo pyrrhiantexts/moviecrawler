@@ -49,7 +49,7 @@ def hollywood():
     hwood_datesheet = []
 
     #Find titles
-    for i in len(hwood_movies):
+    for i in range(len(hwood_movies)):
         hwood_titles[i] = hwood_movies[i].get_dom_attribute("title")
     
     #Find movies on cards
@@ -59,7 +59,7 @@ def hollywood():
             #Find show dates
             dateelements = driver.find_elements(By.CSS_SELECTOR, f'.show-card:has(.show-card__header:has(a[href="https://hollywoodtheatre.org/show/{titlebug}/"])) .show-card-events .show-card-events__date')
             #Find show times for today
-            for i in len(dateelements):
+            for i in range(len(dateelements)):
                 hwood_dates[i] = dateelements[i].text
                 if convert_date(hwood_dates[i]) == datetime.today():
                     timeelements = driver.find_elements(By.CSS_SELECTOR, f'.show-card:has(.show-card__header:has(a[href="https://hollywoodtheatre.org/show/{titlebug}/"])) .show-card-events .show-card-events__showtimes span')
@@ -74,10 +74,7 @@ def hollywood():
                     break
                 hwood_datesheet.append(datesheet_entry)
 
-
-
-
-    driver.close()
+    return hwood_datesheet
 
 
 def cinema21():
@@ -116,7 +113,6 @@ def cinema21():
                 else:
                     break
     
-    driver.close()
     return datesheet
 
 
@@ -139,13 +135,14 @@ def tables():
     if pull_c21:
         c21_showtimes = cinema21()
         for item in c21_showtimes:
-            cur.execute(f'INSERT OR REPLACE INTO films (title, showtime1, showtime2, showtime3, showtime4) VALUES ("Cinema 21", "{item});')
+            cur.execute(f'INSERT OR REPLACE INTO films (theater, title, showtime1, showtime2, showtime3, showtime4) VALUES ("Cinema 21", "{item});')
             conn.commit()
     if pull_hollywood:
         hwood_showtimes = hollywood()
         for item in hwood_showtimes:
-            cur.execute(f'INSERT OR REPLACE INTO films (title, showtime1, showtime2, showtime3, showtime4) VALUES ("Hollywood Theater", "{item});')
+            cur.execute(f'INSERT OR REPLACE INTO films (theater, title, showtime1, showtime2, showtime3, showtime4) VALUES ("Hollywood Theatre", "{item});')
             conn.commit()
+    driver.quit()
 
 if __name__ == '__main__':
     main()
